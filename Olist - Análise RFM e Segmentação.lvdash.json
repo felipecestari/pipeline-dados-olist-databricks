@@ -1,0 +1,997 @@
+{
+  "datasets": [
+    {
+      "name": "5ed58c42",
+      "displayName": "Segmentação",
+      "queryLines": [
+        "USE CATALOG `workspace`;\n",
+        "USE SCHEMA `default`;\n",
+        "\n",
+        "SELECT\n",
+        "segmento,\n",
+        "COUNT(*) AS clientes,\n",
+        "ROUND(SUM(monetario), 0) AS receita,\n",
+        "SUM(monetario) / COUNT(*) AS ticket_medio,\n",
+        "ROUND(AVG(parcelas_medias), 1) AS parcelas_medias,\n",
+        "AVG(usou_cartao) AS pct_cartao\n",
+        "\n",
+        "FROM workspace.olist.gold_rfm\n",
+        "\n",
+        "GROUP BY segmento"
+      ]
+    },
+    {
+      "name": "00d5f8f3",
+      "displayName": "UF",
+      "queryLines": [
+        "USE CATALOG `workspace`;\n",
+        "USE SCHEMA `default`;\n",
+        "\n",
+        "SELECT *,\n",
+        "qde_usou_cartao/qde_pedidos AS `taxa_uso_cartao_credito`\n",
+        "FROM workspace.olist.gold_clientes_uf"
+      ]
+    },
+    {
+      "name": "fe4713b8",
+      "displayName": "Resumo",
+      "queryLines": [
+        "USE CATALOG `workspace`;\n",
+        "USE SCHEMA `default`;\n",
+        "\n",
+        "SELECT *,\n",
+        "qde_usou_cartao/qde_pedidos AS `taxa_uso_cartao_credito`\n",
+        "FROM workspace.olist.gold_clientes_resumo"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "4fa69de6",
+      "displayName": "Olist",
+      "layout": [
+        {
+          "widget": {
+            "name": "4ee5f903",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "5ed58c42",
+                  "fields": [
+                    {
+                      "name": "sum(clientes)",
+                      "expression": "SUM(`clientes`)"
+                    },
+                    {
+                      "name": "segmento",
+                      "expression": "`segmento`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(clientes)",
+                  "axis": {
+                    "hideGrid": true,
+                    "hideLabels": true
+                  },
+                  "displayName": "Quantidade de clientes",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "segmento",
+                  "axis": {
+                    "hideLabels": false
+                  },
+                  "displayName": "Segmento",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "91d92e28",
+            "multilineTextboxSpec": {
+              "lines": [
+                "<span style=\"text-align:center;display:block;\"><span style=\"font-weight:700;font-size:36px;line-height:1.5\">Olist E-commerce Dataset - Análise RFM e Segmentação de clientes</span></span>\n",
+                "\n",
+                "<span style=\"font-weight:500;font-size:18px\">Fonte dos dados: </span>[<span style=\"font-size:18px\">Kaggle</span>](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "quantidade-de-clientes",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "fe4713b8",
+                  "fields": [
+                    {
+                      "name": "sum(qde_clientes)",
+                      "expression": "SUM(`qde_clientes`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:24px\">Clientes</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(qde_clientes)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "none",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "style": {
+                    "fontWeight": 700,
+                    "fontStyle": "normal"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "0a9a65d2",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "fe4713b8",
+                  "fields": [
+                    {
+                      "name": "sum(qde_pedidos)",
+                      "expression": "SUM(`qde_pedidos`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:24px\">Pedidos</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(qde_pedidos)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "none",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "style": {
+                    "fontWeight": 700,
+                    "fontStyle": "normal"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 2,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "36c95d86",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "fe4713b8",
+                  "fields": [
+                    {
+                      "name": "sum(faturamento)",
+                      "expression": "SUM(`faturamento`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:24px\">Faturamento</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(faturamento)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "BRL",
+                    "abbreviation": "none",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 0
+                    }
+                  },
+                  "style": {
+                    "fontWeight": 700,
+                    "fontStyle": "normal"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "c50aa1cc",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "fe4713b8",
+                  "fields": [
+                    {
+                      "name": "sum(valor_medio)",
+                      "expression": "SUM(`valor_medio`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:24px\">Ticket Médio</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(valor_medio)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "BRL",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 0
+                    }
+                  },
+                  "style": {
+                    "fontWeight": 700,
+                    "fontStyle": "normal"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 2,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "6253fdcc",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "fe4713b8",
+                  "fields": [
+                    {
+                      "name": "sum(parcelas_medias)",
+                      "expression": "SUM(`parcelas_medias`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:24px\">Média de Parcelamento</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(parcelas_medias)",
+                  "style": {
+                    "fontWeight": 700,
+                    "fontStyle": "normal"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 2,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "74690b37",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "fe4713b8",
+                  "fields": [
+                    {
+                      "name": "sum(taxa_uso_cartao_credito)",
+                      "expression": "SUM(`taxa_uso_cartao_credito`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size: 24px;\">Pedidos via Crédito</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(taxa_uso_cartao_credito)",
+                  "format": {
+                    "type": "number-percent",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 0
+                    }
+                  },
+                  "style": {
+                    "fontWeight": 700,
+                    "fontStyle": "normal"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 10,
+            "y": 2,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "cae7f155",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "00d5f8f3",
+                  "fields": [
+                    {
+                      "name": "qde_pedidos",
+                      "expression": "`qde_pedidos`"
+                    },
+                    {
+                      "name": "customer_state",
+                      "expression": "`customer_state`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "qde_pedidos",
+                  "displayName": "Pedidos",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "customer_state",
+                  "displayName": "Estado",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                },
+                "label": {
+                  "show": false
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 20,
+            "width": 6,
+            "height": 10
+          }
+        },
+        {
+          "widget": {
+            "name": "b09ba713",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "00d5f8f3",
+                  "fields": [
+                    {
+                      "name": "customer_state",
+                      "expression": "`customer_state`"
+                    },
+                    {
+                      "name": "qde_clientes",
+                      "expression": "`qde_clientes`"
+                    },
+                    {
+                      "name": "qde_pedidos",
+                      "expression": "`qde_pedidos`"
+                    },
+                    {
+                      "name": "faturamento",
+                      "expression": "`faturamento`"
+                    },
+                    {
+                      "name": "valor_medio",
+                      "expression": "`valor_medio`"
+                    },
+                    {
+                      "name": "parcelas_medias",
+                      "expression": "`parcelas_medias`"
+                    },
+                    {
+                      "name": "taxa_uso_cartao_credito",
+                      "expression": "`taxa_uso_cartao_credito`"
+                    }
+                  ],
+                  "disaggregated": true,
+                  "orders": [
+                    {
+                      "direction": "DESC",
+                      "expression": "`faturamento`"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "customer_state",
+                    "displayName": "Estado"
+                  },
+                  {
+                    "fieldName": "qde_clientes",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      },
+                      "hideGroupSeparator": false
+                    },
+                    "displayName": "Clientes"
+                  },
+                  {
+                    "fieldName": "qde_pedidos",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      },
+                      "hideGroupSeparator": false
+                    },
+                    "displayName": "Pedidos"
+                  },
+                  {
+                    "fieldName": "faturamento",
+                    "format": {
+                      "type": "number-currency",
+                      "currencyCode": "BRL",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      },
+                      "hideGroupSeparator": false
+                    },
+                    "displayName": "Faturamento"
+                  },
+                  {
+                    "fieldName": "valor_medio",
+                    "format": {
+                      "type": "number-currency",
+                      "currencyCode": "BRL",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      },
+                      "hideGroupSeparator": false
+                    },
+                    "displayName": "Ticket Médio"
+                  },
+                  {
+                    "fieldName": "parcelas_medias",
+                    "displayName": "Média de Parcelamento"
+                  },
+                  {
+                    "fieldName": "taxa_uso_cartao_credito",
+                    "format": {
+                      "type": "number-percent",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      },
+                      "hideGroupSeparator": true
+                    },
+                    "displayName": "Pedidos via Crédito"
+                  }
+                ],
+                "rowOrder": [
+                  {
+                    "by": "column-reversed",
+                    "field": {
+                      "index": 3
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 20,
+            "width": 6,
+            "height": 10
+          }
+        },
+        {
+          "widget": {
+            "name": "5bc21e8f",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "5ed58c42",
+                  "fields": [
+                    {
+                      "name": "sum(ticket_medio)",
+                      "expression": "SUM(`ticket_medio`)"
+                    },
+                    {
+                      "name": "segmento",
+                      "expression": "`segmento`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(ticket_medio)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "BRL",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "axis": {
+                    "hideTitle": false,
+                    "hideLabels": true,
+                    "hideGrid": true
+                  },
+                  "displayName": "Ticket Médio",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "segmento",
+                  "axis": {
+                    "hideLabels": false
+                  },
+                  "displayName": "Segmento",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "c24b7b7d",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "5ed58c42",
+                  "fields": [
+                    {
+                      "name": "segmento",
+                      "expression": "`segmento`"
+                    },
+                    {
+                      "name": "clientes",
+                      "expression": "`clientes`"
+                    },
+                    {
+                      "name": "receita",
+                      "expression": "`receita`"
+                    },
+                    {
+                      "name": "ticket_medio",
+                      "expression": "`ticket_medio`"
+                    },
+                    {
+                      "name": "parcelas_medias",
+                      "expression": "`parcelas_medias`"
+                    },
+                    {
+                      "name": "pct_cartao",
+                      "expression": "`pct_cartao`"
+                    }
+                  ],
+                  "disaggregated": true,
+                  "orders": [
+                    {
+                      "direction": "DESC",
+                      "expression": "`ticket_medio`"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "segmento",
+                    "displayName": "Segmento"
+                  },
+                  {
+                    "fieldName": "clientes",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      },
+                      "hideGroupSeparator": false
+                    },
+                    "displayName": "Clientes"
+                  },
+                  {
+                    "fieldName": "receita",
+                    "format": {
+                      "type": "number-currency",
+                      "currencyCode": "BRL",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      },
+                      "hideGroupSeparator": false
+                    },
+                    "displayName": "Faturamento"
+                  },
+                  {
+                    "fieldName": "ticket_medio",
+                    "format": {
+                      "type": "number-currency",
+                      "currencyCode": "BRL",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      },
+                      "hideGroupSeparator": false
+                    },
+                    "displayName": "Ticket Médio"
+                  },
+                  {
+                    "fieldName": "parcelas_medias",
+                    "displayName": "Média de Parcelamento"
+                  },
+                  {
+                    "fieldName": "pct_cartao",
+                    "format": {
+                      "type": "number-percent",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      },
+                      "hideGroupSeparator": true
+                    },
+                    "displayName": "Pedidos via Crédito",
+                    "formatTemplate": ""
+                  }
+                ],
+                "rowOrder": [
+                  {
+                    "by": "column-reversed",
+                    "field": {
+                      "index": 3
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 10,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "f6b91680",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "5ed58c42",
+                  "fields": [
+                    {
+                      "name": "segmento",
+                      "expression": "`segmento`"
+                    },
+                    {
+                      "name": "sum(receita)",
+                      "expression": "SUM(`receita`)"
+                    }
+                  ],
+                  "disaggregated": false,
+                  "orders": [
+                    {
+                      "direction": "ASC",
+                      "expression": "SUM(`receita`)"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(receita)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "BRL",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "displayName": "Faturamento",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "segmento",
+                  "legend": {
+                    "title": "Segmento",
+                    "position": "top"
+                  },
+                  "displayName": "Segmento",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "measure",
+                      "measure": {
+                        "fieldName": "sum(receita)"
+                      }
+                    }
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 4,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "09117165",
+            "multilineTextboxSpec": {
+              "lines": [
+                "<span style=\"font-weight:700;font-size:18px\">Regra de negócio para segmentação</span><br><span style=\"font-size:14px\">Divisão da base de clientes em 5 grupos de tamanhos parecidos, com scores de 1 a 5 para recência e para faturamento.</span><br><br><span style=\"font-size:14px\">Como foram definidos os segmentos? A partir dos scores, temos:</span><br><span style=\"font-size:14px\">- Frequência de compra > 1 & Score recência >= 4 -- \"Recorrentes ativos\"</span><br><span style=\"font-size:14px\">- Score recência >= 4 & Score faturamento >= 4 -- \"Novos de alto valor\"</span><br><span style=\"font-size:14px\">- Score recência <= 2 & Score faturamento >= 4 -- \"Alto valor em risco\"</span><br><span style=\"font-size:14px\">- Score recência <= 2  -- \"Inativos\"</span><br><span style=\"font-size:14px\">- Demais -- \"Base regular\"</span>"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 16,
+            "width": 12,
+            "height": 4
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
